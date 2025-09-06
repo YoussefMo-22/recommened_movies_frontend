@@ -4,6 +4,8 @@ const DEFAULT_BG =
   "https://cdn.pixabay.com/photo/2023/01/17/19/49/tv-7725366_1280.jpg";
 
 export default function Hero() {
+  const isLoggedIn = !!localStorage.getItem("access");
+
   return (
     <section className="relative h-[60vh] md:h-[70vh] mb-6">
       {/* Background */}
@@ -31,12 +33,16 @@ export default function Hero() {
           >
             Browse Movies
           </Link>
-          <Link
-            to="/register"
-            className="px-6 py-3 rounded-2xl bg-white text-black text-lg font-semibold hover:bg-gray-200"
-          >
-            Join Now
-          </Link>
+
+          {/* Only show Join Now button if the user is NOT logged in */}
+          {!isLoggedIn && (
+            <Link
+              to="/register"
+              className="px-6 py-3 rounded-2xl bg-white text-black text-lg font-semibold hover:bg-gray-200"
+            >
+              Join Now
+            </Link>
+          )}
         </div>
       </div>
     </section>

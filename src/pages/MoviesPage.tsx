@@ -51,7 +51,7 @@ const loadMore = async () => {
   return (
     <div ref={containerRef} className="h-[calc(100vh-64px)] overflow-y-auto p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
       {movies.map(m => <PosterCard key={m.id} m={m} />)}
-      {loading && <Spinner />}
+      {loading && <div className="col-span-full flex justify-center"><Spinner /></div>}
     </div>
   );
 }
