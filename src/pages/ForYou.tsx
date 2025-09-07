@@ -23,9 +23,10 @@ export default function ForYou() {
   // show spinner until recommendation request is done
   if (status === "loading") {
     return (
-      <div className="py-20 flex justify-center">
-        <Spinner />
-      </div>
+          <div className="flex flex-col h-screen justify-center items-center py-10">
+            <Spinner />
+            It will take a few seconds to load recommendations movies for you...
+          </div>
     );
   }
 

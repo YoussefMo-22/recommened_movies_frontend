@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { loginThunk } from "../features/auth/authSlice";
 import { useNavigate, Link } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -11,20 +13,41 @@ export default function Login() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await dispatch(loginThunk(form));
-    if ((res as any).meta.requestStatus === "fulfilled") navigate("/");
+
+    try {
+      const res = await dispatch(loginThunk(form));
+
+      if ((res as any).meta.requestStatus === "fulfilled") {
+        toast.success("Logged in successfully!");
+        navigate("/");
+      } else {
+        const errors = (res as any).payload;
+        if (errors) {
+          Object.values(errors).forEach((errArray: any) => {
+            if (Array.isArray(errArray)) {
+              errArray.forEach((msg) => toast.error(msg));
+            } else {
+              toast.error(errArray);
+            }
+          });
+        } else {
+          toast.error("Login failed. Please check your credentials.");
+        }
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Something went wrong");
+    }
   };
 
   return (
     <div className="min-h-screen bg-brand-bg flex flex-col">
-      {/* Top bar with site title */}
+      <ToastContainer position="top-right" autoClose={3000} />
       <header className="p-4">
         <Link to="/" className="text-2xl font-bold text-brand-sky hover:text-brand-sky-600">
           🎬 Recommendo
         </Link>
       </header>
 
-      {/* Centered login form */}
       <main className="flex flex-1 items-center justify-center">
         <div className="w-full max-w-md bg-brand-card rounded-2xl shadow-soft p-8">
           <h1 className="text-3xl font-bold mb-6 text-center">Login</h1>

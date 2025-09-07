@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { registerThunk } from "../features/auth/authSlice";
 import { useNavigate, Link } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Register() {
   const dispatch = useAppDispatch();
@@ -17,16 +19,28 @@ export default function Register() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.password !== form.password2) return alert("Passwords don't match");
-    const res = await dispatch(registerThunk(form));
-    if ((res as any).meta.requestStatus === "fulfilled") {
-      navigate("/login");
+
+    if (form.password !== form.password2) {
+      toast.error("Passwords don't match");
+      return;
+    }
+
+    try {
+      const res = await dispatch(registerThunk(form));
+      if ((res as any).meta.requestStatus === "fulfilled") {
+        toast.success("Account created successfully!");
+        navigate("/login");
+      } else {
+        toast.error("Registration failed. Please try again.");
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Something went wrong");
     }
   };
 
   return (
     <div className="min-h-screen bg-brand-bg flex flex-col">
-      {/* Top bar with site title */}
+      <ToastContainer position="top-right" autoClose={3000} />
       <header className="p-4">
         <Link
           to="/"
